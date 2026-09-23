@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>
+        {% block title %} - MyTodoSite {% endblock %}  
+    </title>
+    {% block meta %} {% endblock %}
+    <link rel="stylesheet" href="/static/css/global.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/create">Create</a>
+            <a href="/auth/sign-up">Sign Up</a>
+            <a href="/auth/log-in">Log In</a>
+            <a href="/todos">Todos</a>
+            <a href="/error/server-error">Server Error</a>
+            <a href="/error/not-found">Not Found</a>
+        </nav>
+    </header>
+    <main>
+        {% block main %}
+
+        {% endblock %}
+    </main>
+    <!-- <main><h1>I am from axum community</h1></main> -->
+</body>
+
+</html>

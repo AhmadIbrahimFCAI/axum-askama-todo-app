@@ -1,0 +1,24 @@
+###ad
+
+@api = http://localhost:8000
+
+###
+GET {{api}}
+
+###
+GET {{api}}/create
+
+###
+GET {{api}}/error/server-error
+
+###
+GET {{api}}/error/not-found
+
+###
+GET {{api}}/todos
+
+###
+GET {{api}}/auth/sign-up
+
+###
+GET {{api}}/auth/log-in
