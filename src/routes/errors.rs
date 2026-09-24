@@ -1,7 +1,8 @@
-use axum::{body::Body, http::StatusCode, response::{IntoResponse, Response}};
+use askama::{Template};
+use axum::{body::Body, http::StatusCode, response::{Html, IntoResponse, Response}};
 use thiserror::Error;
 
-use crate::data::errors::DataError;
+use crate::{data::errors::DataError, routes, };
 
 
 
@@ -15,15 +16,29 @@ pub enum AppError{
 }
 
 impl IntoResponse for AppError {
-    fn into_response(self) -> axum::response::Response {
+    fn into_response(self) -> Response<Body> {
         match self {
-            AppError::Database(e) => todo!(),
-            AppError::Template(e) => todo!(),
-        }
+            AppError::Database(e) => server_error(e.to_string()),
+            AppError::Template(e) => server_error(e.to_string()),
+        }.into_response()
     }
 }
 
 fn server_error(e: String) -> (StatusCode, Response<Body>){
     tracing::error!("Server error: {}", e);
-    
+    let html_string = routes::server_errors::ServerErrorTemplate{}.render().unwrap();
+    /* match html_string{
+        Ok(html) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Html(html).into_response(),
+        ),
+        Err(e) => {
+            tracing::error!("Server error: {}", e.to_string());
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Internal server error, please contact me.".into_response(),
+            )
+        }
+    } */
+   (StatusCode::INTERNAL_SERVER_ERROR, Html(html_string).into_response())
 }

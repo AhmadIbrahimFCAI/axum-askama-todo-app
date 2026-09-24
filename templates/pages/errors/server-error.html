@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 Internal Server Error | System Status</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        danger: {
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            900: '#450a0a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Font: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f17;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Ambient background glow effects */
+        .ambient-glow-red {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(11, 15, 23, 0) 70%);
+        }
+        
+        .ambient-glow-blue {
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(11, 15, 23, 0) 70%);
+        }
+
+        /* Tech grid overlay */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Smooth accordion transitions */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .accordion-content.expanded {
+            max-height: 500px;
+        }
+
+        /* Toast notification styling */
+        #toast {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative selection:bg-red-500/30 selection:text-red-200">
+
+    <!-- Background visual layer -->
+    <div class="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
+        <div class="absolute inset-0 bg-grid-pattern opacity-60"></div>
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ambient-glow-red rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] ambient-glow-blue rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+        <a href="#" class="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-red-500 rounded-lg p-1">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-red-600 to-rose-400 flex items-center justify-center shadow-lg shadow-red-950/50 group-hover:scale-105 transition-transform">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </div>
+            <span class="font-bold text-lg tracking-tight text-slate-200 group-hover:text-white transition-colors">NexusCloud</span>
+        </a>
+
+        <!-- Live System Status Badge -->
+        <a href="#" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-medium text-slate-300 hover:border-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-slate-700">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
+            <span>Partial Service Outage</span>
+        </a>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 flex-1 flex items-center justify-center px-6 py-12">
+        <div class="max-w-2xl w-full text-center space-y-8">
+            
+            <!-- Animated Server Illustration / Icon -->
+            <div class="relative inline-block animate-float">
+                <div class="relative w-32 h-32 mx-auto flex items-center justify-center">
+                    <!-- Glow ring -->
+                    <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-red-500/20 to-orange-500/10 blur-xl"></div>
+                    
+                    <!-- Server Chassis Container -->
+                    <div class="relative w-full h-full bg-slate-900/90 border border-slate-800/90 rounded-2xl shadow-2xl p-4 flex flex-col justify-between backdrop-blur-md">
+                        
+                        <!-- Server Rack Item 1 -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-lg p-2 flex items-center justify-between">
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                <div class="w-8 h-1 bg-slate-800 rounded"></div>
+                            </div>
+                            <div class="w-2 h-2 rounded-full bg-emerald-500/40"></div>
+                        </div>
+
+                        <!-- Server Rack Item 2 (Faulty) -->
+                        <div class="bg-slate-950 border border-red-900/50 rounded-lg p-2 flex items-center justify-between shadow-inner shadow-red-950/40">
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                                <div class="w-10 h-1 bg-red-950 rounded"></div>
+                            </div>
+                            <div class="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
+                        </div>
+
+                        <!-- Server Rack Item 3 -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-lg p-2 flex items-center justify-between">
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
+                                <div class="w-6 h-1 bg-slate-800 rounded"></div>
+                            </div>
+                            <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                        </div>
+
+                    </div>
+
+                    <!-- Warning Indicator Badge -->
+                    <div class="absolute -top-2 -right-2 bg-red-600 text-white p-2 rounded-full shadow-lg border-2 border-slate-950">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Typography -->
+            <div class="space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold uppercase tracking-wider">
+                    Error Code 500
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+                    Internal Server Error
+                </h1>
+                <p class="text-slate-400 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
+                    Something unexpected happened on our server while processing your request. Our automated monitoring system has already logged this incident.
+                </p>
+            </div>
+
+            <!-- Primary Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                <!-- Refresh Button -->
+                <button onclick="window.location.reload()" 
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-medium hover:from-red-500 hover:to-rose-500 active:scale-95 transition-all shadow-lg shadow-red-950/50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Refresh Page
+                </button>
+
+                <!-- Go Home Button -->
+                <a href="/" 
+                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 font-medium hover:bg-slate-800 hover:text-white active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-slate-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 1 0 01-1 1h-3m-6 0a1 1 1 0 001-1v-4a1 1 1 0 011-1h2a1 1 1 0 011 1v4a1 1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Return Home
+                </a>
+
+                <!-- Report Issue Button -->
+                <a href="#support" 
+                   onclick="alert('Support ticket creation overlay initialized.'); return false;"
+                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-transparent text-slate-400 font-medium hover:text-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-800">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    Contact Support
+                </a>
+            </div>
+
+            <!-- Collapsible Diagnostic Section for Developers -->
+            <div class="pt-6 border-t border-slate-800/80 text-left">
+                <button id="toggle-details-btn" 
+                        onclick="toggleDiagnostics()" 
+                        aria-expanded="false"
+                        aria-controls="diagnostic-details"
+                        class="w-full flex items-center justify-between p-4 rounded-xl bg-slate-900/50 border border-slate-800/80 hover:bg-slate-900 hover:border-slate-700 transition-all text-sm font-medium text-slate-400 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-700">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                        Technical Diagnostic Details
+                    </span>
+                    <svg id="accordion-arrow" class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                <!-- Collapsible Panel -->
+                <div id="diagnostic-details" class="accordion-content mt-2">
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800/90 font-mono text-xs text-slate-400 space-y-3">
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-slate-900">
+                            <span class="text-slate-500">Request ID (Correlation ID):</span>
+                            <span id="req-id" class="text-slate-200 font-semibold select-all">req_9841f3a2b8e90c12</span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-slate-900">
+                            <span class="text-slate-500">Timestamp:</span>
+                            <span id="timestamp-utc" class="text-slate-300">--</span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-slate-900">
+                            <span class="text-slate-500">Cluster Node:</span>
+                            <span class="text-slate-300">us-east-1a-edge-04</span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                            <span class="text-slate-500">Error Exception:</span>
+                            <span class="text-red-400">HTTP_500_INTERNAL_SERVER_ERROR (UpstreamTimeout)</span>
+                        </div>
+
+                        <!-- Copy Button -->
+                        <div class="pt-2 flex justify-end">
+                            <button onclick="copyDiagnostics()" 
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-slate-700">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                </svg>
+                                <span>Copy Details</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800/60 text-xs text-slate-500">
+        <div>
+            &copy; <span id="current-year"></span> NexusCloud Systems Inc. All rights reserved.
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="#" class="hover:text-slate-400 transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-slate-400 transition-colors">System Diagnostics</a>
+            <a href="#" class="hover:text-slate-400 transition-colors">Help Center</a>
+        </div>
+    </footer>
+
+    <!-- Copy Toast Feedback -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-950 border border-emerald-800 text-emerald-200 shadow-2xl text-sm font-medium">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span>Diagnostic information copied to clipboard</span>
+    </div>
+
+    <script>
+        // Set dynamic UTC timestamp
+        document.getElementById('timestamp-utc').innerText = new Date().toUTCString();
+        
+        // Set current copyright year
+        document.getElementById('current-year').innerText = new Date().getFullYear();
+
+        // Generate a random request correlation ID for realistic feedback
+        const randomHex = (length) => [...Array(length)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+        document.getElementById('req-id').innerText = `req_${randomHex(16)}`;
+
+        // Accordion Toggle Logic
+        function toggleDiagnostics() {
+            const content = document.getElementById('diagnostic-details');
+            const button = document.getElementById('toggle-details-btn');
+            const arrow = document.getElementById('accordion-arrow');
+
+            const isExpanded = content.classList.contains('expanded');
+
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                button.setAttribute('aria-expanded', 'false');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('expanded');
+                button.setAttribute('aria-expanded', 'true');
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Copy Diagnostic Info to Clipboard with Toast Notification
+        function copyDiagnostics() {
+            const reqId = document.getElementById('req-id').innerText;
+            const timestamp = document.getElementById('timestamp-utc').innerText;
+
+            const diagnosticData = `Error Code: 500 Internal Server Error\nRequest ID: ${reqId}\nTimestamp: ${timestamp}\nNode: us-east-1a-edge-04\nException: HTTP_500_INTERNAL_SERVER_ERROR`;
+
+            // Clipboard fallback logic
+            const textArea = document.createElement("textarea");
+            textArea.value = diagnosticData;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Display Toast Notification
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

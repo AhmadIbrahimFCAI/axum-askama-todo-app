@@ -5,7 +5,7 @@ use axum::{Router, response::{Html, IntoResponse, Response}, routing::get};
 pub fn routes() -> Router{
     Router::new()
         .route("/not-found", get(not_found_handler))
-        .route("/server-error", get(server_error_handler))
+        .route("/server-error", get(basic_server_error_handler))
 }
 
 
@@ -15,11 +15,15 @@ async fn not_found_handler() -> Response{
 }
 
 
-async fn server_error_handler() -> Response{
-    let html_string = ServerErrorTemplate{}.render().unwrap();
+async fn basic_server_error_handler() -> Response{
+    let html_string = BasicServerErrorTemplate{}.render().unwrap();
     Html(html_string).into_response()
 }
 
+// async fn server_error_handler() -> Response{
+//     let html_string = ServerErrorTemplate{}.render().unwrap();
+//     Html(html_string).into_response()
+// }
 
 
 #[derive(Template)]
@@ -28,5 +32,10 @@ struct NotFoundTemplate{}
 
 
 #[derive(Template)]
+#[template(path="pages/errors/basic-server-error.html")]
+struct BasicServerErrorTemplate{}
+
+
+#[derive(Template)]
 #[template(path="pages/errors/server-error.html")]
-struct ServerErrorTemplate{}
+pub struct ServerErrorTemplate{}

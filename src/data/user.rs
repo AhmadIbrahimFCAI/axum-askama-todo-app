@@ -31,3 +31,4 @@ pub async fn create_user(pool: &PgPool, email: &str, password: &str) -> Result<(
     
     Ok(())
 }
+
