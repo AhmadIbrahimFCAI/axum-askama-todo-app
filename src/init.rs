@@ -1,6 +1,9 @@
 use std::{str::FromStr, time::Duration};
 
 use sqlx::{ConnectOptions, PgPool, postgres::{PgConnectOptions, PgPoolOptions}};
+use tower_sessions::{Expiry, SessionManagerLayer, cookie::time};
+use tower_sessions_sqlx_store::PostgresStore;
+use tracing::instrument::WithSubscriber;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 
@@ -47,3 +50,16 @@ pub async fn database_connection() -> PgPool{
 
     pg_pool
 }
+
+pub async fn session(pool: PgPool) {
+    let session_store = PostgresStore::new(pool);
+
+    session_store.migrate().await.expect("Failed to run session migration");
+
+    let session_layer = SessionManagerLayer::new(session_store)
+        .with_expiry(Expiry::OnInactivity(time::Duration::days(1)));
+    
+
+}
+
+

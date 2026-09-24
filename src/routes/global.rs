@@ -1,5 +1,5 @@
 use askama::Template;
-use axum::{Router, response::{AppendHeaders, Html, IntoResponse, Response}, routing::get};
+use axum::{Router, response::{Html, IntoResponse, Response}, routing::get};
 use tower_http::services::ServeDir;
 
 use crate::routes::errors::AppError;

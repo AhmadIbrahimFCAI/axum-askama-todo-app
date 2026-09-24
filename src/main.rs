@@ -16,11 +16,13 @@ async fn main() {
 
     let pg_pool = init::database_connection().await;
 
+    let session_layer = init::session(pg_pool.clone()).await;
+
     let app_state = AppState{
         connection_pool: pg_pool,
     };
 
-    let app = routes::create_router(app_state);
+    let app = routes::create_router(app_state).layer(session_layer);
 
     tracing::info!("Server is starting...");
     tracing::info!("Listening @ {}", addr);
