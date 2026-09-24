@@ -8,8 +8,23 @@
 <meta name="description" content="This is sign-up page">
 {% endblock %}
 
-{% block main %}  
-<h1>
-    This is sign up page
-</h1>
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/auth.css">
+{% endblock %}
+
+
+
+{% block main %}
+<div class="auth-container">
+    <h1 class="auth-heading">Create Account</h1>
+    <form method="post" action="/auth/sign-up">
+        <input type="email" placeholder="Enter your email" name="email">
+        <input type="password" placeholder="Enter your password" name="password">
+        <button class="filled-button" type="submit" >Submit</button>
+    </form>
+    <form method="get" action="/auth/log-in">
+        <button>Already have account? log-in</button>
+    </form>
+</div>
 {% endblock %}

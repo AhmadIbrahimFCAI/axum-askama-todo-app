@@ -1,7 +1,7 @@
 
 mod routes;
 mod init;
-
+mod models;
 
 #[tokio::main]
 async fn main() {
