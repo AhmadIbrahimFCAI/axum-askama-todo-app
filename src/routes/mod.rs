@@ -15,7 +15,7 @@ pub fn create_router() -> Router{
         .nest("/error", errors::routes())
         .merge(global::routes())
         .layer(TraceLayer::new_for_http()
-            .make_span_with(|_: &Request<Body>| tracing::info_span!("http-request"))
+            .make_span_with(|_: &Request<Body>| tracing::info_span!(""))
             .on_request(on_request)
             .on_response(on_response)
             .on_failure(on_failure)
@@ -27,13 +27,13 @@ pub fn create_router() -> Router{
 
 
 fn on_request(request: &Request<Body>, _: &Span){
-    tracing::info!("Request started: method {} path {}", request.method(), request.uri().path())
+    tracing::info!("-> {} | {}", request.method(), request.uri().path())
 }
 
 fn on_response(response: &Response<Body>, latency: Duration, _: &Span){
-    tracing::info!("Response generated: status {} in {:?}", response.status(), latency)
+    tracing::info!("<- {} | {:?}", response.status(), latency)
 }
 
 fn on_failure(error: ServerErrorsFailureClass, latency: Duration, _: &Span) {
-    tracing::error!("Request failed: {:?} after {:?}", error, latency)
+    tracing::error!("-x {:?} | {:?}", error, latency)
 }

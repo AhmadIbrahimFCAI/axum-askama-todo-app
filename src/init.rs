@@ -7,7 +7,7 @@ pub fn logging(){
         .from_env_lossy();
     let subscriber = FmtSubscriber::builder()
         // .with_max_level(tracing::Level::TRACE)
-        // .with_target(false)
+        .with_target(false)
         .with_env_filter(filter)
         .finish();
 
