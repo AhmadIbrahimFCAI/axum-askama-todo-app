@@ -16,15 +16,7 @@
 
 <body>
     <header>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/create">Create</a>
-            <a href="/auth/sign-up">Sign Up</a>
-            <a href="/auth/log-in">Log In</a>
-            <a href="/todos">Todos</a>
-            <a href="/error/server-error">Server Error</a>
-            <a href="/error/not-found">Not Found</a>
-        </nav>
+        {% include "partials/nav.html" %}
     </header>
     <main>
         {% block main %}
