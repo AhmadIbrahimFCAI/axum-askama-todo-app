@@ -6,13 +6,17 @@ use tracing::Span;
 
 pub mod auth;
 pub mod global;
-pub mod errors;
+pub mod server_errors;
 pub mod helpers;
 
-pub fn create_router() -> Router{
+
+use crate::models::app::AppState;
+
+
+pub fn create_router(app_state: AppState) -> Router{
     let v1_routes = Router::new()
-        .nest("/auth", auth::routes())
-        .nest("/error", errors::routes())
+        .nest("/auth", auth::routes(app_state))
+        .nest("/error", server_errors::routes())
         .merge(global::routes())
         .layer(TraceLayer::new_for_http()
             .make_span_with(|_: &Request<Body>| tracing::info_span!(""))

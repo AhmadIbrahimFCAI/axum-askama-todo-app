@@ -2,16 +2,25 @@
 mod routes;
 mod init;
 mod models;
+mod data;
+
+use crate::models::app::AppState;
+
 
 #[tokio::main]
 async fn main() {
     let addr = "127.0.0.1:8000";
     let listener = tokio::net::TcpListener::bind(addr).await.expect("Failed to bind addr");
-    let app = routes::create_router();
     
     init::logging();
 
-    init::database_connection().await;
+    let pg_pool = init::database_connection().await;
+
+    let app_state = AppState{
+        connection_pool: pg_pool,
+    };
+
+    let app = routes::create_router(app_state);
 
     tracing::info!("Server is starting...");
     tracing::info!("Listening @ {}", addr);

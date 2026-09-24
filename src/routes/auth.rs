@@ -1,23 +1,30 @@
 
 use askama::Template;
-use axum::{Form, Router, http::StatusCode, response::{Html, IntoResponse, Redirect, Response}, routing::get};
+use axum::{Form, Router, extract::State, http::StatusCode, response::{Html, IntoResponse, Redirect, Response}, routing::get};
 use validator::Validate;
-use crate::models::user_form_model::{AuthFormModel};
+use crate::models::{app::AppState, user_form_model::AuthFormModel};
 use super::helpers;
+use crate::data::user;
 
-pub fn routes() -> Router{
+
+pub fn routes(app_state: AppState) -> Router{
     Router::new()
         .route("/log-in", get(login_handler))
         .route("/sign-up",
         get(signup_handler)
                       .post(post_sign_up_handler))
+        .with_state(app_state)
 }
 
-async fn post_sign_up_handler(Form(user_form): Form<AuthFormModel>) ->Response{
+async fn post_sign_up_handler(State(app_state): State<AppState>,Form(user_form): Form<AuthFormModel>) ->Response{
     tracing::info!("Email is {} and the password is {}", user_form.email, user_form.password);
     match user_form.validate(){
         Ok(_) => {
-            Redirect::to("/").into_response()
+
+            user::create_user(&app_state.connection_pool, &user_form.email, &user_form.password).await.unwrap();
+
+
+            Redirect::to("/auth/log-in").into_response()
         },
         Err(err) => {
             // println!("{:?}", helpers::extract_errors(&err));
