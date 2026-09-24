@@ -11,6 +11,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="/static/css/auth.css">
+
 {% endblock %}
 
 
@@ -19,8 +20,23 @@
 <div class="auth-container">
     <h1 class="auth-heading">Create Account</h1>
     <form method="post" action="/auth/sign-up">
-        <input type="email" placeholder="Enter your email" name="email">
-        <input type="password" placeholder="Enter your password" name="password">
+        {% if email_error.is_empty() %}
+            <input type="text" placeholder="Enter your email" name="email" value="{{email}}">
+        {% else %}
+            <input class="invalid-input-field animate__animated animate__shakeX" type="text"
+                placeholder="Enter your email" name="email" value="{{email}}">
+            <label>{{email_error}}</label>
+        {% endif %}
+        {% if password_error.is_empty() %}
+            <input type="password" placeholder="Enter your password" name="password">        
+        {% else %}
+            <input class="invalid-input-field animate__animated animate__shakeX" type="password"
+                placeholder="Enter your password" name="password">        
+            <label>{{password_error}}</label>
+        {% endif %}
+        
+
+
         <button class="filled-button" type="submit" >Submit</button>
     </form>
     <form method="get" action="/auth/log-in">

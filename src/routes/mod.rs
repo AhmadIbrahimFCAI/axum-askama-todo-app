@@ -7,7 +7,7 @@ use tracing::Span;
 pub mod auth;
 pub mod global;
 pub mod errors;
-
+pub mod helpers;
 
 pub fn create_router() -> Router{
     let v1_routes = Router::new()
