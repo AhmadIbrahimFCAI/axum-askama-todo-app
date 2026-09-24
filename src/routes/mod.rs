@@ -8,7 +8,7 @@ pub mod auth;
 pub mod global;
 pub mod server_errors;
 pub mod helpers;
-
+pub mod errors;
 
 use crate::models::app::AppState;
 

@@ -1,6 +1,8 @@
 use askama::Template;
-use axum::{Router, response::{Html, IntoResponse, Response}, routing::get};
+use axum::{Router, response::{AppendHeaders, Html, IntoResponse, Response}, routing::get};
 use tower_http::services::ServeDir;
+
+use crate::routes::errors::AppError;
 
 pub fn routes() -> Router {
     let static_dir = ServeDir::new("static");
@@ -14,20 +16,20 @@ pub fn routes() -> Router {
 }
 
 
-async fn home_handler() -> Response{
+async fn home_handler() -> Result<Response, AppError>{
     let html_string = HomeTemplate{}.render().unwrap();
-    Html(html_string).into_response()
+    Ok(Html(html_string).into_response())
 }
 
 
-async fn create_handler() -> Response{
+async fn create_handler() -> Result<Response, AppError>{
     let html_string = CreateTemplate{}.render().unwrap();
-    Html(html_string).into_response()
+    Ok(Html(html_string).into_response())
 }
 
-async fn todos_handler() -> Response{
+async fn todos_handler() -> Result<Response, AppError>{
     let html_string = TodosTemplate{}.render().unwrap();
-    Html(html_string).into_response()
+    Ok(Html(html_string).into_response())
 }
 
 

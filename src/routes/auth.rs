@@ -2,7 +2,7 @@
 use askama::Template;
 use axum::{Form, Router, extract::State, http::StatusCode, response::{Html, IntoResponse, Redirect, Response}, routing::get};
 use validator::Validate;
-use crate::models::{app::AppState, user_form_model::AuthFormModel};
+use crate::{data::errors::DataError, models::{app::AppState, user_form_model::AuthFormModel}, routes::errors::AppError};
 use super::helpers;
 use crate::data::user;
 
@@ -16,15 +16,27 @@ pub fn routes(app_state: AppState) -> Router{
         .with_state(app_state)
 }
 
-async fn post_sign_up_handler(State(app_state): State<AppState>,Form(user_form): Form<AuthFormModel>) ->Response{
+async fn post_sign_up_handler(State(app_state): State<AppState>,Form(user_form): Form<AuthFormModel>) -> Result<Response, AppError>{
     tracing::info!("Email is {} and the password is {}", user_form.email, user_form.password);
     match user_form.validate(){
         Ok(_) => {
 
-            user::create_user(&app_state.connection_pool, &user_form.email, &user_form.password).await.unwrap();
+            let result = user::create_user(
+                &app_state.connection_pool, 
+                &user_form.email, 
+                &user_form.password,
+            ).await;
 
+            if let Err(err) = result{
+                if let DataError::FailedQuery(e) = err {
+                    tracing::error!("Failed to sign up {}", e);
+                    return Ok(Redirect::to("/auth/sign-up").into_response());
+                } else {
+                    Err(err)?
+                }
+            }
 
-            Redirect::to("/auth/log-in").into_response()
+            Ok(Redirect::to("/auth/log-in").into_response())
         },
         Err(err) => {
             // println!("{:?}", helpers::extract_errors(&err));
@@ -46,10 +58,10 @@ async fn post_sign_up_handler(State(app_state): State<AppState>,Form(user_form):
                 email_error: &email_error,
                 password_error: &password_error,
                 
-            }.render().unwrap();
+            }.render()?;
 
             let response = Html(html_string).into_response();
-            (StatusCode::BAD_REQUEST, response).into_response()
+            Ok((StatusCode::BAD_REQUEST, response).into_response())
         }
     }
 
@@ -57,21 +69,22 @@ async fn post_sign_up_handler(State(app_state): State<AppState>,Form(user_form):
 
 
 
-async fn login_handler() -> Response{
-    let html_string = LogInTemplate{}.render().unwrap();
-    Html(html_string).into_response()
+async fn login_handler() -> Result<Response, AppError>{
+    let html_string = LogInTemplate{}.render()?;
+    
+    Ok(Html(html_string).into_response())
 }
 
 
 
 
-async fn signup_handler() -> Response{
+async fn signup_handler() -> Result<Response, AppError>{
     let html_string = SignUpTemplate{
         email: "",
         email_error: "",
         password_error: "",
-    }.render().unwrap();
-    Html(html_string).into_response()
+    }.render()?;
+    Ok(Html(html_string).into_response())
 }
 
 
