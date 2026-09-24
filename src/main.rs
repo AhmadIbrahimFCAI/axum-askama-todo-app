@@ -10,6 +10,9 @@ async fn main() {
     let app = routes::create_router();
     
     init::logging();
+
+    init::database_connection().await;
+
     tracing::info!("Server is starting...");
     tracing::info!("Listening @ {}", addr);
 
